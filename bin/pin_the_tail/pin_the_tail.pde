@@ -1,23 +1,45 @@
+import ddf.minim.*; 
 PImage donkey; 
 PImage tail;
 PImage blank;
-void setup(){
-  donkey = loadImage("donkey.jpg"); 
-  background(donkey);   
-  size(2000,1500);
-  tail = loadImage("tail.png");  
-  blank =loadImage("blank background.jpg");
-  blank.resize(2000,1500);
-  donkey.resize(2000,1500);
+AudioSample sound1;
+int tailx = 0;
+int taily = 0;
+boolean tailpinned = false;
+boolean soundplayed = false;
+void setup() {
+  frameRate(300);
+  donkey = loadImage("donkey.jpg");
+  background(donkey);
+  size(2710, 1814);
+  tail = loadImage("tail.png");
+  Minim minim = new Minim(this); 
+  sound1 = minim.loadSample("homer-woohoo.wav");
 }
-void draw(){
-  if(mouseX<=500&&mouseY<=500){
-    loadImage("blank background");
-  } else{
-    loadImage("donkey.jpg");
-  }
-  if(mousePressed==true){
+void draw() {
+  if (!tailpinned) {
+    if (mouseX>=0&&mouseY>=0&&mouseX<=100&&mouseY<=100) {
+
+      background(donkey);
+    } else { 
+      background(255);
+    }
+  } else { 
     background(donkey);
-  image(tail, mouseX-390, mouseY-150); 
+  }
+  if (mousePressed) {
+    tailpinned=true;
+    tailx = mouseX-390;
+    taily = mouseY-150;
+    println("X: " + mouseX + " Y: " + mouseY);
+  }
+  if (tailx>0&&taily>0) {
+    image(tail, tailx, taily);
+  }
+  if (tailx+390>700&&tailx+390<750&&taily+150>650&&taily+150<750) {
+    if (!soundplayed) {
+      soundplayed=true;
+      sound1.trigger();
+    }
   }
 }
